@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import Location
 from googlemaps import Client
 from datetime import datetime
 from polyline.codec import PolylineCodec
@@ -171,45 +170,45 @@ def takeInput():
 # print(getDistance((23.80443, 90.36964), (23.80511, 90.3693)))
 
 
-host = takeInput()
-now = datetime.now()
-sp1 = gmaps.directions(host[0], host[1],
-                       mode="driving",
-                       departure_time=now)
-sp1src = (sp1[0]['legs'][0]['start_location']
-          ['lat'], sp1[0]['legs'][0]['start_location']['lng'])
-sp1end = (sp1[0]['legs'][0]['end_location']
-          ['lat'], sp1[0]['legs'][0]['end_location']['lng'])
-poly1 = PolylineCodec().decode(sp1[0]['overview_polyline']['points'])
-# for i in range(len(poly1)-1):
-#     print("{" + 'lat: {d[0]}, lng: {d[1]}'.format(d=poly1[i]) + "},")
-num = input("num of request: ")
-for i in range(int(num)):
-    print("I: ", i)
-    req = takeInput()
+def result(host, req):
+    # host = takeInput()
+    now = datetime.now()
+    sp1 = gmaps.directions(host[0], host[1],
+                           mode="driving",
+                           departure_time=now)
+    sp1src = (sp1[0]['legs'][0]['start_location']
+              ['lat'], sp1[0]['legs'][0]['start_location']['lng'])
+    sp1end = (sp1[0]['legs'][0]['end_location']
+              ['lat'], sp1[0]['legs'][0]['end_location']['lng'])
+    poly1 = PolylineCodec().decode(sp1[0]['overview_polyline']['points'])
+    # for i in range(len(poly1)-1):
+    #     print("{" + 'lat: {d[0]}, lng: {d[1]}'.format(d=poly1[i]) + "},")
+    # num = input("num of request: ")
+    # for i in range(int(num)):
+    #     print("I: ", i)
+    # req = takeInput()
     now = datetime.now()
     sp2 = gmaps.directions(req[0], req[1], mode="driving",
-                           departure_time=now)
+                            departure_time=now)
 
     sp2src = (sp2[0]['legs'][0]['start_location']
-              ['lat'], sp2[0]['legs'][0]['start_location']['lng'])
+                ['lat'], sp2[0]['legs'][0]['start_location']['lng'])
 
     sp2end = (sp2[0]['legs'][0]['end_location']
-              ['lat'], sp2[0]['legs'][0]['end_location']['lng'])
+                ['lat'], sp2[0]['legs'][0]['end_location']['lng'])
 
     poly2 = PolylineCodec().decode(sp2[0]['overview_polyline']['points'])
     # for i in range(len(poly2)-1):
     #     print("{" + 'lat: {d[0]}, lng: {d[1]}'.format(d=poly2[i]) + "},")
     intersectedNodes = matchPolyLine(poly1, poly2)
     val = dis_desFromPath(poly1, (sp2[0]['legs'][0]['end_location']
-                                  ['lat'], sp2[0]['legs'][0]['end_location']['lng']))
+                                    ['lat'], sp2[0]['legs'][0]['end_location']['lng']))
 
     srcdes = req[0].split(host[1])
     d1 = math.atan2(sp2end[1] - sp1end[1], sp2end[0] - sp1end[0])
     d2 = math.atan2(sp2end[1] - sp2src[1], sp2end[0] - sp2src[0])
     d = False
 
-    
     # else:
     #     if(poly2[0][0] >= poly2[1][0]):
     #         print(poly2[0][0], poly2[1][0])
@@ -244,18 +243,106 @@ for i in range(int(num)):
     # print("int :",intersectedNodes)
     # print(val)
     # print(len(intersectedNodes))
-    print(getDistance(sp1src, sp2src))
-    print(getDistance(sp1src, sp2end))
+    # print(getDistance(sp1src, sp2src))
+    # print(getDistance(sp1src, sp2end))
     if(getDistance(sp1src, sp2src) > getDistance(sp1src, sp2end)):
-        print("NO")
+        # print("NO")
+        return "NO"
     else:
         if(val <= 5000 and len(intersectedNodes) >= 10):
-            print("Yes")
+            # print("Yes")
+            return "YES"
         else:
-            print("min dis from path:" ,val)
-            print("interesected nodes :",intersectedNodes)
-            print("NO")
-            
+            # print("min dis from path:", val)
+            # print("interesected nodes :", intersectedNodes)
+            # print("NO")
+            return "NO"
+
+
+# host = takeInput()
+# now = datetime.now()
+# sp1 = gmaps.directions(host[0], host[1],
+#                        mode="driving",
+#                        departure_time=now)
+# sp1src = (sp1[0]['legs'][0]['start_location']
+#           ['lat'], sp1[0]['legs'][0]['start_location']['lng'])
+# sp1end = (sp1[0]['legs'][0]['end_location']
+#           ['lat'], sp1[0]['legs'][0]['end_location']['lng'])
+# poly1 = PolylineCodec().decode(sp1[0]['overview_polyline']['points'])
+# # for i in range(len(poly1)-1):
+# #     print("{" + 'lat: {d[0]}, lng: {d[1]}'.format(d=poly1[i]) + "},")
+# num = input("num of request: ")
+# for i in range(int(num)):
+#     print("I: ", i)
+#     req = takeInput()
+#     now = datetime.now()
+#     sp2 = gmaps.directions(req[0], req[1], mode="driving",
+#                            departure_time=now)
+
+#     sp2src = (sp2[0]['legs'][0]['start_location']
+#               ['lat'], sp2[0]['legs'][0]['start_location']['lng'])
+
+#     sp2end = (sp2[0]['legs'][0]['end_location']
+#               ['lat'], sp2[0]['legs'][0]['end_location']['lng'])
+
+#     poly2 = PolylineCodec().decode(sp2[0]['overview_polyline']['points'])
+#     # for i in range(len(poly2)-1):
+#     #     print("{" + 'lat: {d[0]}, lng: {d[1]}'.format(d=poly2[i]) + "},")
+#     intersectedNodes = matchPolyLine(poly1, poly2)
+#     val = dis_desFromPath(poly1, (sp2[0]['legs'][0]['end_location']
+#                                   ['lat'], sp2[0]['legs'][0]['end_location']['lng']))
+
+#     srcdes = req[0].split(host[1])
+#     d1 = math.atan2(sp2end[1] - sp1end[1], sp2end[0] - sp1end[0])
+#     d2 = math.atan2(sp2end[1] - sp2src[1], sp2end[0] - sp2src[0])
+#     d = False
+
+#     # else:
+#     #     if(poly2[0][0] >= poly2[1][0]):
+#     #         print(poly2[0][0], poly2[1][0])
+#     #         if(poly1[0][0] >= poly1[1][0]):
+#     #             print("Increasing")
+#     #             print(poly1[0][0], poly1[1][0])
+#     #             d = True
+#     #         else:
+#     #             d = False
+#     #     elif(poly2[0][0] < poly2[1][0]):
+#     #         print(poly2[0][0], poly2[1][0])
+#     #         if(poly1[0][0] < poly1[1][0]):
+#     #             d = True
+#     #         else:
+#     #             d = False
+#     #     else:
+#     #         print("eq")
+#     #         d = False
+
+#     # print(d)
+#     # print(d1)
+#     # print(d1)
+#     # print(d2)
+#     # if(d1 < 0 and d2 < 0):
+#     #     d = True
+#     # elif (d1 >= 0 and d2 >= 0):
+#     #     d = True
+#     # else:
+#     #     d = False
+#     # print(srcdes)
+#     # print("Val : ",val)
+#     # print("int :",intersectedNodes)
+#     # print(val)
+#     # print(len(intersectedNodes))
+#     # print(getDistance(sp1src, sp2src))
+#     # print(getDistance(sp1src, sp2end))
+#     if(getDistance(sp1src, sp2src) > getDistance(sp1src, sp2end)):
+#         print("NO")
+#     else:
+#         if(val <= 5000 and len(intersectedNodes) >= 10):
+#             print("Yes")
+#         else:
+#             print("min dis from path:", val)
+#             print("interesected nodes :", intersectedNodes)
+#             print("NO")
+
 
 data1 = PolylineCodec().decode(
     "eqepCynrfPiHdCeCt@_DbACWpJsC~@[|XoJjH_CfCy@fCq@hD{@pIiBbEs@vIcB|IqBb@uA\\q@LOj@SrBYh@A`CNt@@j@KhUmEfAUh@Sb@Ir@IzEYvF_@rGg@|@O\\OXSTWPa@PqAjBqTHqA?YI_@QUYKiAGcDGsDI]?uB\\W@KAg@e@Q[Qg@qD_@eAMgBUeCWkCYuASuB[aAGeACsBJuEZg@?OCEGa@}FSuCYwC]wAoAsCe@i@iA_CmAkC_AqBeBqESu@Cw@?c@")
@@ -381,3 +468,4 @@ dir1 = [(23.8007712, 90.371387), (23.7657205,
 
 # for item in record:
 #     print(record[item].showRiderDetails())
+
